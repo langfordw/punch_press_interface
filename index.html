@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>Hello World!</title>
+        
+        <!-- <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css"> -->
+        <link rel="stylesheet" href="pure-min.css">
+        <link rel="stylesheet" href="style.css">
+
+        <meta charset="utf-8">
+
+        <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+       
+    </head>
+
+    <body>
+
+        
+        <div class="pure-g">
+            <div class="pure-u-1-3">
+                <h2>Feed</h2>
+                <div align=center>
+                    <form class="pure-form pure-form-aligned">
+                        <fieldset>
+                            <div class="input-field pure-control-group">
+                                <label for="feeddist">Distance:</label>
+                                <input class="pure-input-1-4" id="feed_dist" text-align="center" type="text" placeholder="2.5"><label class="unit">mm</label>
+                            </div><br>
+                            <div class="input-field pure-control-group">
+                                <label width=6em for="feed_speed">Speed:</label>
+                                <input class="pure-input-1-4" id="feed_speed" text-align="center" type="text" placeholder="1"><label class="unit">mm/s</label>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div align=center class="toggle-btn-grp cssonly">
+                    <div><input type="radio" value="0" name="feed_group"/><label onclick="" class="toggle-btn"><<--</label></div>
+                    <div><input type="radio" value="1" name="feed_group" checked/><label onclick="" class="toggle-btn">-->></label></div>
+                </div>
+
+                <div align="center">
+                    <button type="button" class="button-step pure-button" id='feed_step'/>Feed</button>
+                </div>
+            </div>
+
+            <div class="pure-u-1-3">
+                <h2>Punch</h2>
+                <div align=center>
+                    <form class="pure-form pure-form-aligned">
+                        <fieldset>
+                            <div class="input-field pure-control-group">
+                                <label for="feed_dist">Angle:</label>
+                                <input class="pure-input-1-4" id="punch_angle" text-align="center" type="text"><label class="unit">deg.</label>
+                            </div><br>
+                             <div class="input-field pure-control-group">
+                                <label width=6em for="feed_dist">Speed:</label>
+                                <input class="pure-input-1-4" id="punch_speed" text-align="center" type="text"><label class="unit">rpm</label>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div align=center class="toggle-btn-grp cssonly">
+                    <div><input type="radio" value="0" name="punch_dir" checked/><label onclick="" class="toggle-btn">CW</label></div>
+                    <div><input type="radio" value="1" name="punch_dir"/><label onclick="" class="toggle-btn">CCW</label></div>
+                </div>
+
+                <div align="center">
+                    <button type="button" class="button-step pure-button" id='punch'/>Punch!</button>
+                </div>
+            </div>
+        
+
+        <div class="pure-u-1-3">
+                <h2>Feed and Punch</h2>
+                <div align=center>
+                    <form class="pure-form pure-form-aligned">
+                        <fieldset>
+                            <div class="input-field pure-control-group">
+                                <label for="loop_times">Loop:</label>
+                                <input class="pure-input-1-4" id="loop_times" text-align="center" type="text"><label class="unit">times</label>
+                            </div><br>
+                        </fieldset>
+                    </form>
+                </div>
+                <div align="center">
+                    <button type="button" class="go-button-step pure-button" id='go'/>Go!</button>
+                    <br><br>
+                    <button type="button" class="button-step pure-button" id='stop'/>Stop</button>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="pure-g">
+            <div class="pure-u-1-3">
+                <h2>Command Log:</h2>
+                <div class="scroll">
+                <span id="textDisplay"></span>
+                </div>
+            </div>
+            <div class="pure-u-2-3">
+            <br><br>
+                <video class="vid_window" id="video" width="533" height="400" autoplay></video>
+            </div>
+        </div>
+        
+        <canvas id="canvas" height="480" width="640"></canvas> 
+
+        <script type="text/javascript">
+            $(function () {
+                $('#feed_dist').val("0.45");
+                $('#feed_speed').val("2.0");
+
+                $('#punch_angle').val("100.0");
+                $('#punch_speed').val("5.0");
+
+                $('#loop_times').val("10");
+            });
+
+            function pack(bytes) {
+                // var str = "";
+                // for(var i = 0; i < bytes.length; i += 1) {
+                //     str += String.fromCharCode(bytes[i]);
+                // }
+                // return str;
+                return String.fromCharCode.apply(null, new Uint8Array(bytes));
+            }
+
+        </script>
+
+         <script type="text/javascript">
+            $(document).ready(function(){
+                var socket = io.connect('http://localhost:8080');
+                // var socket = new WebSocket('ws://localhost:8080')
+                // socket.binaryType = 'arraybuffer';
+
+                var feed_step_per_mm = 500;
+                var punch_step_per_deg = 1000;
+
+                var out_string;
+                
+                $("#feed_step").click(function() {
+                    var feed_dist = $('#feed_dist').val();
+                    var feed_speed = $('#feed_speed').val();
+                    var feed_dir = $('input[name=feed_group]:checked').val();
+
+                    feed_dist = Math.round(feed_dist * feed_step_per_mm); //# of steps
+                    feed_speed = Math.round(1/(feed_speed * feed_step_per_mm)*0.5e6); // delay in us
+
+                    // out_string = "f" + pack([feed_dist, feed_speed]) + feed_dir;
+                    out_string = "1,"+feed_dist+","+feed_speed+","+feed_dir+"\n";
+
+                    // textDisplay.innerHTML = "Sending: [f, " + feed_dist + ", " + feed_speed + ", " + feed_dir + "] --> " + String.fromCharCode(34) + out_string + String.fromCharCode(34) +"<br>"+ textDisplay.innerHTML;
+
+                    // var obj = {"a":102,"b":feed_dist,"c":feed_speed,"d":102};
+                    // var obj = {feed_dist,feed_speed,feed_dir};
+                    // out_string = JSON.stringify(obj);
+                    // socket.emit('button' ,JSON.stringify(obj));
+                    socket.emit('button',out_string)
+                    textDisplay.innerHTML = "Sending: " + out_string +"<br>"+ textDisplay.innerHTML;
+                    // textDisplay.innerHTML = "Sending: " + out_string;
+                })
+                $("#punch").click(function() {
+                    var punch_angle = $('#punch_angle').val();
+                    var punch_speed = $('#punch_speed').val();
+                    var punch_dir = $('input[name=punch_dir]:checked').val();
+                    
+                    punch_angle = Math.round(punch_angle*punch_step_per_deg/10); // steps to turn
+                    punch_speed = Math.round(1/(punch_speed * punch_step_per_deg)*0.5e6); // delay in us
+                    
+                    // out_string = "p" + pack([punch_angle, punch_speed]) + punch_dir;
+                    out_string = "2,"+punch_angle+","+punch_speed+","+punch_dir+"\n";
+
+                    // textDisplay.innerHTML = "Sending: [p, " + punch_angle + ", " + punch_speed + ", " + punch_dir + "] --> " + String.fromCharCode(34) + out_string + String.fromCharCode(34) +"<br>"+ textDisplay.innerHTML;
+
+                    socket.emit('button' ,out_string);
+
+                    textDisplay.innerHTML = "Sending: " + out_string +"<br>"+ textDisplay.innerHTML;
+                })
+                $("#go").click(function() {
+                    var loop_times = $('#loop_times').val();
+
+                    loop_times = Math.round(loop_times);
+
+                    var feed_dist = $('#feed_dist').val();
+                    var feed_speed = $('#feed_speed').val();
+                    var feed_dir = $('input[name=feed_group]:checked').val();
+
+                    feed_dist = Math.round(feed_dist * feed_step_per_mm); //# of steps
+                    feed_speed = Math.round(1/(feed_speed * feed_step_per_mm)*0.5e6); // delay in us
+
+                    // out_string = "f" + pack([feed_dist, feed_speed]) + feed_dir;
+                    out_string1 = feed_dist+","+feed_speed+","+feed_dir +",";
+
+                    var punch_angle = $('#punch_angle').val();
+                    var punch_speed = $('#punch_speed').val();
+                    var punch_dir = $('input[name=punch_dir]:checked').val();
+                    
+                    punch_angle = Math.round(punch_angle*punch_step_per_deg/10); // steps to turn
+                    punch_speed = Math.round(1/(punch_speed * punch_step_per_deg)*0.5e6); // delay in us
+                    
+                    // out_string = "p" + pack([punch_angle, punch_speed]) + punch_dir;
+                    out_string2 = punch_angle+","+punch_speed+","+punch_dir +",";
+
+                    // out_string = "r" + pack([loop_times]);
+                    out_string =  "3," + out_string1 + out_string2 +loop_times+"\n";
+
+                    // textDisplay.innerHTML = "Sending: [r, " + loop_times + "] --> " + String.fromCharCode(34) + out_string + String.fromCharCode(34) +"<br>"+ textDisplay.innerHTML;
+                    textDisplay.innerHTML = "Sending: " + out_string +"<br>"+ textDisplay.innerHTML;
+
+                    socket.emit('button', out_string);
+                })
+                $("#stop").click(function() {
+                    socket.emit('button' ,"0\n");
+                    textDisplay.innerHTML = "Sending: 0" +"<br>"+ textDisplay.innerHTML;
+                    // socket.send(new ArrayBuffer([100]))
+                    // var buf = new Buffer
+                    // socket.emit('button', buf)
+                    // socket.send('x')
+                })
+                socket.on('responseEvent', function (data) {
+                    textDisplay.innerHTML = data +"<br>"+ textDisplay.innerHTML;
+                });
+            })
+        </script>
+
+        <script>
+        // Put event listeners into place
+        window.addEventListener("DOMContentLoaded", function() {
+        // Grab elements, create settings, etc.
+        var canvas = document.getElementById("canvas"),
+            context = canvas.getContext("2d"),
+            video = document.getElementById("video"),
+            videoObj = { "video": true },
+            errBack = function(error) {
+                console.log("Video capture error: ", error.code); 
+            };
+        // Put video listeners into place
+        if(navigator.getUserMedia) { // Standard
+            navigator.getUserMedia(videoObj, function(stream) {
+                video.src = stream;
+                video.play();
+            }, errBack);
+        } else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+            navigator.webkitGetUserMedia(videoObj, function(stream){
+                video.src = window.webkitURL.createObjectURL(stream);
+                video.play();
+            }, errBack);
+        }
+        else if(navigator.mozGetUserMedia) { // Firefox-prefixed
+            navigator.mozGetUserMedia(videoObj, function(stream){
+                video.src = window.URL.createObjectURL(stream);
+                video.play();
+            }, errBack);
+        }
+        }, false);
+
+        var canvas = document.getElementById("canvas"),
+            context = canvas.getContext("2d"),
+            video = document.getElementById("video");
+        // Trigger photo take
+        // document.getElementById("snap").addEventListener("click", function() {
+        //     context.drawImage(video, 0, 0, 640, 480);
+            // convertImageToCanvas(video)
+            // textDisplay2.innerHTML = "blah"
+        // });
+
+        // // Converts image to canvas; returns new canvas element
+        // function convertImageToCanvas(image) {
+        //     var canvas = document.createElement("canvas");
+        //     canvas.width = image.width;
+        //     canvas.height = image.height;
+        //     canvas.getContext("2d").drawImage(image, 0, 0);
+
+        //     return canvas;
+        // }
+        </script>
+    </body>
+
+</html>
+
+<!-- 
+#include <SoftwareSerial.h>
+#include <util/delay.h>
+
+boolean led_state;
+int feed_step_pin = 0;
+int feed_dir_pin = 1;
+int punch_step_pin = 2;
+int punch_dir_pin = 3;
+
+char input[8];
+
+SoftwareSerial mySerial(9, 10); // RX, TX
+
+void setup() {
+  // initialize serial communication at 9600 bits per second:
+  mySerial.begin(9600);
+
+  pinMode(feed_step_pin, OUTPUT);
+  pinMode(feed_dir_pin, OUTPUT);
+  pinMode(punch_step_pin, OUTPUT);
+  pinMode(punch_dir_pin, OUTPUT);
+  
+  digitalWrite(feed_dir_pin, HIGH);
+}
+
+void loop() {
+  if (mySerial.available()) {
+    int i = 0;
+    while ((mySerial.peek() != 10) && (mySerial.peek() != 13)) {
+      input[i] = mySerial.read();
+      i++;
+    }
+    mySerial.flush();
+    mySerial.println(input);
+    if (input[0] == 'b') { // 98 = b
+//      led_state ^= 1; //xor to toggle
+      mySerial.println("got it!");
+      for (int i=0; i < 3200; i++) {
+        digitalWrite(punch_dir_pin, HIGH);
+        digitalWrite(punch_step_pin, HIGH);
+        _delay_us(100);
+        digitalWrite(punch_step_pin, LOW);
+        _delay_us(100);
+      }
+    }
+  }
+} -->
+
+

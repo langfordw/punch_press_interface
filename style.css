@@ -1,0 +1,112 @@
+body { 
+    padding: 10px; 
+    font-family: sans-serif; 
+}
+h1, h2 { 
+    font-weight: bold; 
+    font-size: 16px; 
+    margin: 30px 0 5px 0;
+    padding: 0;
+    line-height: 1em;
+    text-align:center;
+}
+h1 { 
+    font-size:20px; 
+    margin-top:0; 
+}
+
+label { 
+    /*padding:0.4em 2em 0.4em 0; */
+    width:8em;
+}
+div.scroll{overflow-y: scroll; max-height: 390px;}
+
+.pure-u-2-3 .vid_window {
+    border:solid 1px lightgray;
+    /*margin:0em 4em;*/
+    /*text-align:center;*/
+    display:block;
+    margin:0 auto;
+}
+
+.pure-form-aligned .pure-control-group .unit{
+    width:3em;
+    text-align:left;
+    padding:0.3em;
+}
+
+.toggle-btn { 
+    text-align:center; 
+    /*margin:5px 2px;*/
+    padding:.4em 3em; 
+    color:#000; 
+    background-color:#FFF; 
+    border-radius:10px; 
+    display:inline-block; 
+    border:solid 1px #CCC; 
+    cursor:pointer;
+}
+
+/* CSS only version */
+.toggle-btn-grp.cssonly * {
+    width:90px;
+    height:30px;
+    line-height:30px;
+}
+.toggle-btn-grp.cssonly div {
+    display:inline-block;
+    position:relative;
+    margin:10px 5px;
+}
+
+.toggle-btn-grp.cssonly div label {
+    /*position:absolute;*/
+    z-index:0;
+    padding:0;
+    text-align:center;
+}
+
+.toggle-btn-grp.cssonly div input {
+    position:absolute;
+    z-index:1;
+    cursor:pointer;
+    opacity:0;
+}
+
+.toggle-btn-grp.cssonly div:hover label {
+    border:solid 1px #a0d5dc !important; 
+    background:#f1fdfe;
+}
+
+.toggle-btn-grp.cssonly div input:checked + label {
+    background:lightgreen;
+    /*background:lightgray;*/
+    border:solid 1px black !important; 
+}
+
+.button-step {
+    /*color: white;*/
+    width: 200px;
+    border-radius: 10px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    /*background:lightblue; /* this is a green */*/
+}
+
+.go-button-step {
+    /*color: white;*/
+    width: 200px;
+    height: 67px;
+    border-radius: 10px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    /*background:lightblue; /* this is a green */*/
+}
+
+.button-step:active {
+    background:lightgreen;
+}
+
+input {
+    text-align:right;
+}
+
+                    
