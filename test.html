@@ -19,15 +19,15 @@
 
     	<h3>Feed:</h3>
 		<input type="range" class="slider-width100" min="5" max="10" step="1" oninput="showFeedVal(this.value)" onchange="showFeedVal(this.value)">
-		<label class="unit"><span id="feed"></span>  mm</label>
+		<label class="unit"><span id="feedspan"></span>  mm</label>
 		<button id="feed">Feed</button>
 		<h3>Stroke:</h3>
 		<input type="range" class="slider-width100" min="5" max="10" step="1" oninput="showStrokeVal(this.value)" onchange="showStrokeVal(this.value)">
-		<label class="unit"><span id="stroke"></span>  deg</label>
+		<label class="unit"><span id="strokespan"></span>  deg</label>
 		<button id="punch">Punch</button>
     	<h3>Run:</h3>
 		<input type="range" class="slider-width100" min="1" max="50" step="5" oninput="showRunVal(this.value)" onchange="showRunVal(this.value)">
-		<label class="unit"><span id="run"></span>  times</label>
+		<label class="unit"><span id="runspan"></span>  times</label>
 		<button id="run">Run</button>
 
 	</body>
@@ -36,17 +36,18 @@
 <script type="text/javascript">
 
             function showFeedVal(newVal){
-                document.getElementById("feed").innerHTML=newVal;
+                document.getElementById("feedspan").innerHTML=newVal;
                 feed_dist = newVal;
             }
 
             function showStrokeVal(newVal){
-                document.getElementById("stroke").innerHTML=newVal;
+                document.getElementById("strokespan").innerHTML=newVal;
                 punch_angle = newVal;
             }
 
             function showRunVal(newVal){
-                document.getElementById("run").innerHTML=newVal;
+                document.getElementById("runspan").innerHTML=newVal;
+                loop_times = newVal;
             }
 
         </script>
