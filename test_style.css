@@ -1,0 +1,11 @@
+html{
+    font-size:200%;
+    -ms-text-size-adjust:100%;
+    -webkit-text-size-adjust:100%
+}
+
+.slider-width100
+{
+    width: 200px;
+}
+                    
