@@ -28,7 +28,7 @@ audio:not([controls]){
 }
 
 html{
-	font-size:100%;
+	font-size:90%;
 	-ms-text-size-adjust:100%;
 	-webkit-text-size-adjust:100%
 }
@@ -441,7 +441,7 @@ table{
 }
 
 .pure-u-1,.pure-u-1-1,.pure-u-5-5,.pure-u-24-24{
-	width:100%
+	width:80%
 }
 
 .pure-button{
@@ -722,6 +722,10 @@ table{
 
 .pure-form .pure-input-1-4{
 	width:25%
+}
+
+.pure-form .pure-input-1-6{
+	width:18%
 }
 
 .pure-form .pure-help-inline,.pure-form-message-inline{

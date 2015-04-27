@@ -78,8 +78,9 @@
                     <form class="pure-form pure-form-aligned">
                         <fieldset>
                             <div class="input-field pure-control-group">
-                                <label for="loop_times">loop:</label>
-                                <input class="pure-input-1-4" id="loop_times" text-align="center" type="text"><label class="unit">times</label>
+                                <i><label for="loop_times">Loop:</label></i><br><br>
+                                <input class="pure-input-1-4" id="loop_times" text-align="center" type="text">
+                                <label class="unit">times</label>
                             </div><br>
                         </fieldset>
                     </form>
@@ -260,7 +261,7 @@
 
         var canvas = document.getElementById("canvas"),
             context = canvas.getContext("2d"),
-            video = document.getElementById("video");
+            // video = document.getElementById("video");
         // Trigger photo take
         // document.getElementById("snap").addEventListener("click", function() {
         //     context.drawImage(video, 0, 0, 640, 480);
