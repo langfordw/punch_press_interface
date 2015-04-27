@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>Hello World!</title>
+        
+        <!-- <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css"> -->
+        <!-- <link rel="stylesheet" href="pure-min.css"> -->
+        <!-- <link rel="stylesheet" href="style.css"> -->
+
+        <meta charset="utf-8">
+
+        <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+       
+    </head>
+
+    <body>
+
+ <input type="range" min="5" max="10" step="1" oninput="showVal(this.value)" onchange="showVal(this.value)">
+<label class="unit"><span id="valBox"></span>  times</label>
+
+
+<script type="text/javascript">
+
+            function showVal(newVal){
+                document.getElementById("valBox").innerHTML=newVal;
+            }
+
+        </script>
