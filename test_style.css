@@ -1,7 +1,12 @@
 html{
-    font-size:200%;
+    font-size:150%;
     -ms-text-size-adjust:100%;
     -webkit-text-size-adjust:100%
+}
+
+h3 {
+    font-size:1em;
+    /*margin:2.33em 0*/
 }
 
 .slider-width100
