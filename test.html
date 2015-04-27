@@ -17,14 +17,31 @@
 
     <body>
 
- <input type="range" class="slider-width100" min="5" max="10" step="1" oninput="showVal(this.value)" onchange="showVal(this.value)">
-<label class="unit"><span id="valBox"></span>  times</label>
+    	<h3>Feed:</h3>
+		<input type="range" class="slider-width100" min="5" max="10" step="1" oninput="showFeedVal(this.value)" onchange="showFeedVal(this.value)">
+		<label class="unit"><span id="feed"></span>  mm</label>
+		<h3>Stroke:</h3>
+		<input type="range" class="slider-width100" min="5" max="10" step="1" oninput="showStrokeVal(this.value)" onchange="showStrokeVal(this.value)">
+		<label class="unit"><span id="stroke"></span>  deg</label>
+    	<h3>Run:</h3>
+		<input type="range" class="slider-width100" min="1" max="50" step="5" oninput="showRunVal(this.value)" onchange="showRunVal(this.value)">
+		<label class="unit"><span id="run"></span>  times</label>
+
+	</body>
 
 
 <script type="text/javascript">
 
-            function showVal(newVal){
-                document.getElementById("valBox").innerHTML=newVal;
+            function showFeedVal(newVal){
+                document.getElementById("feed").innerHTML=newVal;
+            }
+
+            function showStrokeVal(newVal){
+                document.getElementById("stroke").innerHTML=newVal;
+            }
+
+            function showRunVal(newVal){
+                document.getElementById("run").innerHTML=newVal;
             }
 
         </script>
