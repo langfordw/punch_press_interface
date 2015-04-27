@@ -17,133 +17,123 @@
 
     <body>
 
-    	<h3>Feed:</h3>
-		<input type="range" class="slider-width100" min="5" max="10" step="1" oninput="showFeedVal(this.value)" onchange="showFeedVal(this.value)">
+<!--     	<h3>Feed:</h3>
+		<input type="range" class="slider-width100" value="5" min="0" max="10" step=".25" oninput="showFeedVal(this.value)" onchange="showFeedVal(this.value)">
 		<label class="unit"><span id="feedspan"></span>  mm</label>
 		<button id="feed">Feed</button>
 		<h3>Stroke:</h3>
-		<input type="range" class="slider-width100" min="5" max="10" step="1" oninput="showStrokeVal(this.value)" onchange="showStrokeVal(this.value)">
+		<input type="range" class="slider-width100" value="100" min="0" max="200" step="5" oninput="showStrokeVal(this.value)" onchange="showStrokeVal(this.value)">
 		<label class="unit"><span id="strokespan"></span>  deg</label>
 		<button id="punch">Punch</button>
     	<h3>Run:</h3>
-		<input type="range" class="slider-width100" min="1" max="50" step="5" oninput="showRunVal(this.value)" onchange="showRunVal(this.value)">
+		<input type="range" class="slider-width100" value="10" min="0" max="50" step="1" oninput="showRunVal(this.value)" onchange="showRunVal(this.value)">
 		<label class="unit"><span id="runspan"></span>  times</label>
-		<button id="go">Run</button>
+		<button id="go">Run</button> -->
+
+        <!-- <table style="width:320px">
+            <tr>
+                <td class="td-2-2">
+                    <input type="range" class="slider-width100" value="5" min="0" max="10" step=".25" oninput="showFeedVal(this.value)" onchange="showFeedVal(this.value)">
+                    <label class="unit"><span id="feedspan"></span>  mm</label>
+                    Cycles<br>
+                    <label class="unit"><input style="width:40%" value="5" id="feedspan"></span></label></td>
+                <td><button id="go" class="button-go"><h3>GO!</h3></button></td>
+            </tr>
+            <tr>
+                <td><span style="width:140px" id="runspan"></span> </td>
+                <td><button id="stop" class="button-stop"><h3>STOP</h3></button></td>
+            </tr>
+        </table> -->
+        <div class="container-main">
+            <div class="container-wide">
+                <input type="range" class="slider-width100" value="5" min="0" max="10" step=".25" oninput="showFeedVal(this.value)" onchange="showFeedVal(this.value)">
+                <label class="unit"><span id="feedspan"></span>  mm</label>
+            </div>
+            <div class="container-narrow">
+                <button id="go" class="button-go"><h3>GO!</h3></button>
+            </div>
+            <div class="container-wide">
+                <input type="range" class="slider-width100" value="5" min="0" max="10" step=".25" oninput="showStrokeVal(this.value)" onchange="showStrokeVal(this.value)">
+                <label class="unit"><span id="strokespan"></span>  deg</label>
+            </div>
+            <div class="container-narrow">
+                <button id="stop" class="button-stop"><h3>STOP</h3></button>
+            </div>
+            <div class="container-wide">
+                <input type="range" class="slider-width100" value="10" min="0" max="50" step="1" oninput="showRunVal(this.value)" onchange="showRunVal(this.value)">
+                <label class="unit"><span id="runspan"></span>  times</label>
+            </div>
+        </div>
+
 
 	</body>
 
 
 	<script type="text/javascript">
+        function showFeedVal(newVal){
+            document.getElementById("feedspan").innerHTML=newVal;
+            feed_dist = newVal;
+        }
 
-            function showFeedVal(newVal){
-                document.getElementById("feedspan").innerHTML=newVal;
-                feed_dist = newVal;
-            }
+        function showStrokeVal(newVal){
+            document.getElementById("strokespan").innerHTML=newVal;
+            punch_angle = newVal;
+        }
 
-            function showStrokeVal(newVal){
-                document.getElementById("strokespan").innerHTML=newVal;
-                punch_angle = newVal;
-            }
+        function showRunVal(newVal){
+            document.getElementById("runspan").innerHTML=newVal;
+            loop_times = newVal;
+        }
 
-            function showRunVal(newVal){
-                document.getElementById("runspan").innerHTML=newVal;
-                loop_times = newVal;
-            }
+    </script>
 
-        </script>
+    <script type="text/javascript">
+        showFeedVal("5")
+        showStrokeVal("100")
+        showRunVal("10")
+    </script>
 
         <script type="text/javascript">
             $(document).ready(function(){
                 var socket = io.connect('http://localhost:8080');
-                // var socket = new WebSocket('ws://localhost:8080')
-                // socket.binaryType = 'arraybuffer';
 
                 var feed_step_per_mm = 500;
                 var punch_step_per_deg = 1000;
+                var feed_speed = 10;
+                var punch_speed = 10;
+                var feed_dir = 1;
+                var punch_dir = 1;
 
                 var out_string;
                 
                 $("#feed").click(function() {
-                    // var feed_dist = $('#feed').val();
-                    var feed_speed = $('#feed_speed').val();
-                    var feed_dir = $('input[name=feed_group]:checked').val();
-
                     var feed_dist_steps = Math.round(feed_dist * feed_step_per_mm); //# of steps
-                    feed_speed = Math.round(1/(feed_speed * feed_step_per_mm)*0.5e6); // delay in us
+                    var feed_speed_steps = Math.round(1/(feed_speed * feed_step_per_mm)*0.5e6); // delay in us
 
-                    // out_string = "f" + pack([feed_dist, feed_speed]) + feed_dir;
-                    out_string = "1,"+feed_dist_steps+","+feed_speed+","+feed_dir+"\n";
-
-                    // textDisplay.innerHTML = "Sending: [f, " + feed_dist + ", " + feed_speed + ", " + feed_dir + "] --> " + String.fromCharCode(34) + out_string + String.fromCharCode(34) +"<br>"+ textDisplay.innerHTML;
-
-                    // var obj = {"a":102,"b":feed_dist,"c":feed_speed,"d":102};
-                    // var obj = {feed_dist,feed_speed,feed_dir};
-                    // out_string = JSON.stringify(obj);
-                    // socket.emit('button' ,JSON.stringify(obj));
+                    out_string = "1,"+feed_dist_steps+","+feed_speed_steps+","+feed_dir+"\n";
                     socket.emit('button',out_string)
-                    textDisplay.innerHTML = "Sending: " + out_string +"<br>"+ textDisplay.innerHTML;
-                    // textDisplay.innerHTML = "Sending: " + out_string;
                 })
-                $("#punch").click(function() {
-                    // var punch_angle = $('#punch').val();
-                    var punch_speed = $('#punch_speed').val();
-                    var punch_dir = $('input[name=punch_dir]:checked').val();
+                $("#punch").click(function() {                    
+                    var punch_angle_steps = Math.round(punch_angle*punch_step_per_deg/10); // steps to turn
+                    var punch_speed_steps = Math.round(1/(punch_speed * punch_step_per_deg)*0.5e6); // delay in us
                     
-                    punch_angle = Math.round(punch_angle*punch_step_per_deg/10); // steps to turn
-                    punch_speed = Math.round(1/(punch_speed * punch_step_per_deg)*0.5e6); // delay in us
-                    
-                    // out_string = "p" + pack([punch_angle, punch_speed]) + punch_dir;
-                    out_string = "2,"+punch_angle+","+punch_speed+","+punch_dir+"\n";
-
-                    // textDisplay.innerHTML = "Sending: [p, " + punch_angle + ", " + punch_speed + ", " + punch_dir + "] --> " + String.fromCharCode(34) + out_string + String.fromCharCode(34) +"<br>"+ textDisplay.innerHTML;
-
+                    out_string = "2,"+punch_angle_steps+","+punch_speed_steps+","+punch_dir+"\n";
                     socket.emit('button' ,out_string);
-
-                    textDisplay.innerHTML = "Sending: " + out_string +"<br>"+ textDisplay.innerHTML;
                 })
                 $("#go").click(function() {
-                    var loop_times = $('#loop_times').val();
-
-                    loop_times = Math.round(loop_times);
-
-                    var feed_dist = $('#feed_dist').val();
-                    var feed_speed = $('#feed_speed').val();
-                    var feed_dir = $('input[name=feed_group]:checked').val();
-
-                    feed_dist = Math.round(feed_dist * feed_step_per_mm); //# of steps
-                    feed_speed = Math.round(1/(feed_speed * feed_step_per_mm)*0.5e6); // delay in us
-
-                    // out_string = "f" + pack([feed_dist, feed_speed]) + feed_dir;
-                    out_string1 = feed_dist+","+feed_speed+","+feed_dir +",";
-
-                    var punch_angle = $('#punch_angle').val();
-                    var punch_speed = $('#punch_speed').val();
-                    var punch_dir = $('input[name=punch_dir]:checked').val();
+                    var feed_dist_steps = Math.round(feed_dist * feed_step_per_mm); //# of steps
+                    var feed_speed_steps = Math.round(1/(feed_speed * feed_step_per_mm)*0.5e6); // delay in us
+                    out_string1 = feed_dist_steps+","+feed_speed_steps+","+feed_dir +",";
                     
-                    punch_angle = Math.round(punch_angle*punch_step_per_deg/10); // steps to turn
-                    punch_speed = Math.round(1/(punch_speed * punch_step_per_deg)*0.5e6); // delay in us
-                    
-                    // out_string = "p" + pack([punch_angle, punch_speed]) + punch_dir;
-                    out_string2 = punch_angle+","+punch_speed+","+punch_dir +",";
+                    var punch_angle_steps = Math.round(punch_angle*punch_step_per_deg/10); // steps to turn
+                    var punch_speed_steps = Math.round(1/(punch_speed * punch_step_per_deg)*0.5e6); // delay in us
+                    out_string2 = punch_angle_steps+","+punch_speed_steps+","+punch_dir +",";
 
-                    // out_string = "r" + pack([loop_times]);
                     out_string =  "3," + out_string1 + out_string2 +loop_times+"\n";
-
-                    // textDisplay.innerHTML = "Sending: [r, " + loop_times + "] --> " + String.fromCharCode(34) + out_string + String.fromCharCode(34) +"<br>"+ textDisplay.innerHTML;
-                    // textDisplay.innerHTML = "Sending: " + out_string +"<br>"+ textDisplay.innerHTML;
-
                     socket.emit('button', out_string);
                 })
                 $("#stop").click(function() {
                     socket.emit('button' ,"0\n");
-                    textDisplay.innerHTML = "Sending: 0" +"<br>"+ textDisplay.innerHTML;
-                    // socket.send(new ArrayBuffer([100]))
-                    // var buf = new Buffer
-                    // socket.emit('button', buf)
-                    // socket.send('x')
                 })
-                socket.on('responseEvent', function (data) {
-                    textDisplay.innerHTML = data +"<br>"+ textDisplay.innerHTML;
-                });
             })
         </script>

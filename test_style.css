@@ -5,12 +5,60 @@ html{
 }
 
 h3 {
-    font-size:1em;
+    font-size:2em;
     /*margin:2.33em 0*/
+}
+
+.container-main
+{
+	width: 320px;
+	height: 280px;
+}
+
+.container-wide
+{
+	width: 220px;
+	height: 93px;
+	vertical-align: middle;
+	text-align: center;
+	float:left;
+}
+
+.container-narrow
+{
+	width: 100px;
+	height: 140px;
+	vertical-align: middle;
+	text-align: center;
+	float:right;
+	display: inline-block;
+}
+
+.td-2-2
+{
+	width: 220px;
+	height: 140px;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .slider-width100
 {
-    width: 300px;
+    width: 200px;
 }
-                    
+
+.button-go
+{
+	background-color:lightgreen;
+	width:100px;
+	height:100px;
+	margin-top: 20px;
+}
+     
+.button-stop
+{
+	background-color:tomato;
+	width:100px;
+	height:100px;
+	margin-top: 20px;r
+}               
