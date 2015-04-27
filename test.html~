@@ -33,7 +33,7 @@
 	</body>
 
 
-	<script type="text/javascript">
+<script type="text/javascript">
 
             function showFeedVal(newVal){
                 document.getElementById("feedspan").innerHTML=newVal;
