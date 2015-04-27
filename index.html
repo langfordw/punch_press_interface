@@ -79,8 +79,10 @@
                         <!-- <fieldset> -->
                             <!-- <div class="input-field pure-control-group"> -->
                                 <i><label for="loop_times">Loop:</label></i>
-                                <input class="pure-input-1-4" id="loop_times" text-align="center" type="text">
-                                <label class="unit">times</label>
+                                <!-- <input class="pure-input-1-4" id="loop_times" text-align="center" type="text"> -->
+
+                                <input type="range" min="5" max="10" step="1" oninput="showVal(this.value)" onchange="showVal(this.value)">
+                                <label class="unit"><span id="valBox"></span>  times</label>
                             <!-- </div><br> -->
                         <!-- </fieldset> -->
                     </form>
@@ -128,6 +130,10 @@
                 // }
                 // return str;
                 return String.fromCharCode.apply(null, new Uint8Array(bytes));
+            }
+
+            function showVal(newVal){
+                document.getElementById("valBox").innerHTML=newVal;
             }
 
         </script>
