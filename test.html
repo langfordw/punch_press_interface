@@ -53,7 +53,7 @@
                 <button id="go" class="button-go"><h3>GO!</h3></button>
             </div>
             <div class="container-wide">
-                <input type="range" class="slider-width100" value="100" min="0" max="200" step="5" oninput="showStrokeVal(this.value)" onchange="showStrokeVal(this.value)">
+                <input type="range" class="slider-width100" value="110" min="0" max="200" step="5" oninput="showStrokeVal(this.value)" onchange="showStrokeVal(this.value)">
                 <label class="unit"><span id="strokespan"></span>  deg</label>
             </div>
             <div class="container-narrow">
@@ -89,7 +89,7 @@
 
     <script type="text/javascript">
         showFeedVal("5")
-        showStrokeVal("100")
+        showStrokeVal("110")
         showRunVal("10")
     </script>
 
@@ -97,7 +97,7 @@
             $(document).ready(function(){
                 var socket = io.connect('http://localhost:8080');
 
-                var feed_step_per_mm = 500;
+                var feed_step_per_mm = 50;
                 var punch_step_per_deg = 1000;
                 var feed_speed = 10;
                 var punch_speed = 10;
