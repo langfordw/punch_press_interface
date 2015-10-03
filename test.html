@@ -2,10 +2,8 @@
 <html lang="en">
 
     <head>
-        <title>Hello World!</title>
-        
-        <!-- <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css"> -->
-        <!-- <link rel="stylesheet" href="pure-min.css"> -->
+        <title>Punch Press Machine Controller</title>
+
         <link rel="stylesheet" href="test_style.css">
 
         <meta charset="utf-8">
@@ -16,34 +14,6 @@
     </head>
 
     <body>
-
-<!--     	<h3>Feed:</h3>
-		<input type="range" class="slider-width100" value="5" min="0" max="10" step=".25" oninput="showFeedVal(this.value)" onchange="showFeedVal(this.value)">
-		<label class="unit"><span id="feedspan"></span>  mm</label>
-		<button id="feed">Feed</button>
-		<h3>Stroke:</h3>
-		<input type="range" class="slider-width100" value="100" min="0" max="200" step="5" oninput="showStrokeVal(this.value)" onchange="showStrokeVal(this.value)">
-		<label class="unit"><span id="strokespan"></span>  deg</label>
-		<button id="punch">Punch</button>
-    	<h3>Run:</h3>
-		<input type="range" class="slider-width100" value="10" min="0" max="50" step="1" oninput="showRunVal(this.value)" onchange="showRunVal(this.value)">
-		<label class="unit"><span id="runspan"></span>  times</label>
-		<button id="go">Run</button> -->
-
-        <!-- <table style="width:320px">
-            <tr>
-                <td class="td-2-2">
-                    <input type="range" class="slider-width100" value="5" min="0" max="10" step=".25" oninput="showFeedVal(this.value)" onchange="showFeedVal(this.value)">
-                    <label class="unit"><span id="feedspan"></span>  mm</label>
-                    Cycles<br>
-                    <label class="unit"><input style="width:40%" value="5" id="feedspan"></span></label></td>
-                <td><button id="go" class="button-go"><h3>GO!</h3></button></td>
-            </tr>
-            <tr>
-                <td><span style="width:140px" id="runspan"></span> </td>
-                <td><button id="stop" class="button-stop"><h3>STOP</h3></button></td>
-            </tr>
-        </table> -->
         <div class="container-main">
             <div class="container-wide">
                 <input type="range" class="slider-width100" value="5" min="0" max="10" step=".25" oninput="showFeedVal(this.value)" onchange="showFeedVal(this.value)">
@@ -64,8 +34,6 @@
                 <label class="unit"><span id="runspan"></span>  times</label>
             </div>
         </div>
-
-
 	</body>
 
 
@@ -99,10 +67,10 @@
 
                 var feed_step_per_mm = 50;
                 var punch_step_per_deg = 1000;
-                var feed_speed = 10;
+                var feed_speed = 100;
                 var punch_speed = 10;
                 var feed_dir = 1;
-                var punch_dir = 1;
+                var punch_dir = 0;
 
                 var out_string;
                 
